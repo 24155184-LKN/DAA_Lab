@@ -1,0 +1,3 @@
+Decimal: 30 -> Binary: 11110
+Decimal: 75 -> Binary: 1001011
+Decimal: 2564 -> Binary: 101000000100
