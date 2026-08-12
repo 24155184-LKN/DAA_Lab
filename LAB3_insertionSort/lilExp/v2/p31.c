@@ -53,14 +53,28 @@ void readArrayFromFile(const char *filename, int arr[], int n) {
     fclose(fp);
 }
 
+void reverseArray(int arr[], int n) {
+    int i = 0;
+    int j = n - 1;
+
+    while (i < j) {
+        int temp = arr[i];
+        arr[i] = arr[j];
+        arr[j] = temp;
+        i++;
+        j--;
+    }
+}
+
 int main() {
 
     int n = 0;
     int *arr = NULL;
     int *bestArr = NULL;
+    int *worstArr = NULL;
     int choice;
     int x;
-    long long averageSteps, bestSteps;
+    long long averageSteps, bestSteps, worstSteps;
     char input[20];
 
     srand((unsigned int)time(NULL));
@@ -69,7 +83,7 @@ int main() {
 
         printf("\n========== MENU ==========\n");
         printf("1. Generate New Input File\n");
-        printf("2. Count Steps (Average Case and Best Case)\n");
+        printf("2. Count Steps (Average, Best and Worst Case)\n");
         printf("3. Exit\n");
         printf("Enter choice: ");
 
@@ -116,11 +130,16 @@ int main() {
             if (fp != NULL)
                 fclose(fp);
 
+            fp = fopen("worst_steps.txt", "w");
+            if (fp != NULL)
+                fclose(fp);
+
             printf("\nFiles created successfully.\n");
             printf("inputNumbers.txt   -> Random Numbers\n");
             printf("outputNumbers.txt  -> Sorted Numbers\n");
             printf("average_steps.txt  -> Graph Data (Average Case)\n");
             printf("best_steps.txt     -> Graph Data (Best Case)\n");
+            printf("worst_steps.txt    -> Graph Data (Worst Case)\n");
 
             break;
 
@@ -133,8 +152,9 @@ int main() {
 
             arr = (int *)malloc(n * sizeof(int));
             bestArr = (int *)malloc(n * sizeof(int));
+            worstArr = (int *)malloc(n * sizeof(int));
 
-            if (arr == NULL || bestArr == NULL) {
+            if (arr == NULL || bestArr == NULL || worstArr == NULL) {
                 printf("Memory allocation failed.\n");
                 return 1;
             }
@@ -163,8 +183,14 @@ int main() {
                 readArrayFromFile("outputNumbers.txt", bestArr, x);
                 bestSteps = insertionSort(bestArr, x);
 
+                /* Worst Case */
+                readArrayFromFile("outputNumbers.txt", worstArr, x);
+                reverseArray(worstArr, x);
+                worstSteps = insertionSort(worstArr, x);
+
                 printf("\nAverage Case Steps = %lld\n", averageSteps);
                 printf("Best Case Steps    = %lld\n", bestSteps);
+                printf("Worst Case Steps   = %lld\n", worstSteps);
 
                 /* Save Average Case Data */
                 FILE *avgFile = fopen("average_steps.txt", "a");
@@ -180,11 +206,19 @@ int main() {
                     fclose(bestFile);
                 }
 
+                /* Save Worst Case Data */
+                FILE *worstFile = fopen("worst_steps.txt", "a");
+                if (worstFile != NULL) {
+                    fprintf(worstFile, "%d %lld\n", x, worstSteps);
+                    fclose(worstFile);
+                }
+
                 printf("Data saved for graph.\n");
             }
 
             free(arr);
             free(bestArr);
+            free(worstArr);
 
             break;
 

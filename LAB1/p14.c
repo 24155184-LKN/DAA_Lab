@@ -15,7 +15,7 @@ void rotate_right(int a[], int n){
 
 int main(){
     int a[100], N, p2, i;
-    printf("Enter the size of the array: ");
+    printf("Enter the size of the array(size <= 100): ");
     scanf("%d", &N);
 
     printf("Enter the elements:\n");
